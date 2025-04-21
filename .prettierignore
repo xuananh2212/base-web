@@ -1,0 +1,5 @@
+# ignore artifacts of the build process
+next/
+
+# igonre specific files
+package-lock.json

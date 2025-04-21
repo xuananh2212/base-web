@@ -1,0 +1,38 @@
+stages:
+  - build
+  - deploy
+
+build:
+  stage: build
+  before_script:
+    - mkdir -p ~/.ssh
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_rsa
+    - chmod 600 ~/.ssh/id_rsa
+    - ssh-keyscan $SERVER >> ~/.ssh/known_hosts
+  script:
+    - export ENV_FILE=".env.testing"
+    - if [ "$CI_COMMIT_BRANCH" = "master" ]; then export ENV_FILE=".env.production"; fi
+    - ssh $USER@$SERVER "
+        cd /home/itchn/frontend-v2 &&
+        git fetch origin &&
+        git reset --hard origin/develop &&
+        docker-compose build --build-arg ENV_FILE=$ENV_FILE"
+  only:
+    - develop
+
+deploy:
+  stage: deploy
+  before_script:
+    - mkdir -p ~/.ssh
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_rsa
+    - chmod 600 ~/.ssh/id_rsa
+    - ssh-keyscan $SERVER >> ~/.ssh/known_hosts
+  script:
+    - ssh $USER@$SERVER "
+        cd /home/itchn/frontend-v2 &&
+        docker-compose down &&
+        docker-compose up -d"
+  needs:
+    - build
+  only:
+    - develop

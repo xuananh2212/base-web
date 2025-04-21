@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  taxnet_frontend-v2:
+    image: taxnet_frontend-v2:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+      cache_from:
+        - taxnet_frontend-v2:latest
+    ports:
+      - "3200:80"
+    environment:
+      - NODE_ENV:development
