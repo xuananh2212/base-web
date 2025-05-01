@@ -2,24 +2,31 @@
 import { Button, Card, Col, Row } from "antd";
 import AOS from "aos";
 import "aos/dist/aos.css";
+import { Award, BarChart2, Book, CheckCircle, Layers, Users } from "lucide-react";
 import Image from "next/image";
 import { useEffect } from "react";
-
 export default function Home() {
   useEffect(() => {
     AOS.init({ duration: 1000 });
   }, []);
-
+  const features = [
+    { title: "Khoá học bám sát SGK", icon: <Book size={48} /> },
+    { title: "Bộ đề phong phú", icon: <Layers size={48} /> },
+    { title: "Phân tích kết quả", icon: <BarChart2 size={48} /> },
+    { title: "Học nhóm cùng bạn bè", icon: <Users size={48} /> },
+    { title: "Theo dõi tiến độ học tập", icon: <CheckCircle size={48} /> },
+    { title: "Chứng chỉ hoàn thành", icon: <Award size={48} /> },
+  ];
   return (
     <div>
       {/* Hero Section */}
       <div
-        className="bg-gradient-to-r from-blue-600 to-indigo-700 text-white text-center py-20 relative overflow-hidden"
+        className="bg-gradient-to-r from-color-400 to-color-500 text-white text-center py-20 relative overflow-hidden"
         data-aos="fade-down"
       >
         <h1 className="relative text-4xl font-bold mb-4 z-10">Nền tảng học tập và luyện đề dành cho học sinh cấp 3</h1>
         <p className="relative mb-6 z-10">Ôn luyện hiệu quả, tự tin chinh phục kỳ thi THPT Quốc gia</p>
-        <Button type="primary" size="large" className="relative z-10">
+        <Button type="primary" size="large" className="relative z-10  bg-color-900">
           Bắt đầu học ngay
         </Button>
       </div>
@@ -28,17 +35,16 @@ export default function Home() {
       <div id="features" className="container mx-auto py-16" data-aos="fade-up">
         <h2 className="text-2xl font-bold text-center mb-10">Tính năng nổi bật</h2>
         <Row gutter={[16, 16]}>
-          {[
-            { title: "Khoá học bám sát SGK", img: "/feature1.png" },
-            { title: "Bộ đề phong phú", img: "/feature2.png" },
-            { title: "Phân tích kết quả", img: "/feature3.png" },
-          ].map((feature, idx) => (
+          {features.map((feature, idx) => (
             <Col xs={24} md={8} key={idx} data-aos="zoom-in">
-              <Card hoverable cover={<Image src={feature.img} alt={feature.title} width={400} height={250} />}>
-                <Card.Meta
-                  title={feature.title}
-                  description="Nắm chắc kiến thức, rèn luyện kỹ năng, nâng cao tự tin."
-                />
+              <Card hoverable>
+                <div className="flex flex-col items-center">
+                  {feature.icon}
+                  <h3 className="text-lg font-semibold mt-4">{feature.title}</h3>
+                  <p className="text-center mt-2 text-gray-600">
+                    Nắm chắc kiến thức, rèn luyện kỹ năng, nâng cao tự tin.
+                  </p>
+                </div>
               </Card>
             </Col>
           ))}
@@ -73,11 +79,7 @@ export default function Home() {
             { title: "Đề thi Anh", questions: 45, img: "/quiz-english.png" },
           ].map((quiz, idx) => (
             <Col xs={24} md={8} key={idx} data-aos="zoom-in-down">
-              <Card
-                hoverable
-                cover={<Image src={quiz.img} alt={quiz.title} width={400} height={250} />}
-                actions={[<Button>Làm ngay</Button>]}
-              >
+              <Card hoverable cover={<Image src={quiz.img} alt={quiz.title} width={400} height={250} />}>
                 <Card.Meta title={quiz.title} description={`${quiz.questions} câu hỏi, bám sát đề thi thật`} />
               </Card>
             </Col>

@@ -1,3 +1,4 @@
+import Header from "@/components/header/Header";
 import getMetadata from "@/configs/site.config";
 import "@/styles/globals.scss";
 import type { Metadata } from "next";
@@ -9,5 +10,12 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default function Layout({ children }: { children: React.ReactNode }) {
-  return <div>{children}</div>;
+  return (
+    <>
+      <div>
+        <Header />
+        <div>{children}</div>
+      </div>
+    </>
+  );
 }
