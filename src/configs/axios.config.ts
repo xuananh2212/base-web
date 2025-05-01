@@ -1,14 +1,14 @@
 import { deepTrimObject } from "@/helpers/object";
-import musicService from "@/services/music/musicService";
 import "axios";
 import axios from "axios";
 import Cookies from "js-cookie";
 import NProgress from "nprogress";
 import qs from "qs";
 import { toast } from "sonner";
+import { API } from "./env.config";
 NProgress.configure({ showSpinner: false });
 export const axiosInstance = axios.create({
-  baseURL: process.env.API,
+  baseURL: API,
   paramsSerializer: (params) => {
     return qs.stringify(params, {
       encodeDotInKeys: true,
@@ -97,8 +97,3 @@ axiosInstance.interceptors.response.use(
     throw error?.response;
   }
 );
-
-const getRefreshToken = async () => {
-  const res = await musicService.refreshToken();
-  return res?.data;
-};
