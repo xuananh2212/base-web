@@ -32,6 +32,7 @@ export default function CourseDetailPage() {
       return;
     }
     // TODO: Gọi API đăng ký học nếu có
+    router.push(`/learning/${data?.id || ""}`);
   };
 
   return (

@@ -9,6 +9,7 @@ interface Lesson {
   title: string;
   duration: string;
   done: boolean;
+  [key: string]: any; // Thêm key để có thể truyền thêm các thuộc tính khác
 }
 
 interface Chapter {
@@ -69,7 +70,13 @@ const SiderLearningDetail = ({
                         )
                       }
                       title={lesson.title}
-                      description={`Thời lượng: ${lesson.duration}`}
+                      description={
+                        lesson.videoUrl
+                          ? `Thời lượng: ${lesson.duration}`
+                          : lesson.document
+                            ? "Dạng tài liệu"
+                            : "Dạng Trắc nghiệm"
+                      }
                     />
                   </List.Item>
                 )}
