@@ -26,6 +26,7 @@ const CourseList = ({ title, badgeText = "Mới", courses }: CourseListProps) =>
               hoverable
               cover={<img alt={course?.title} src={course?.thumb} style={{ height: "180px", objectFit: "cover" }} />}
             >
+              <div className="text-sm font-medium">{course?.title || ""}</div>
               <div className="mt-2 flex items-center justify-between">
                 <div>
                   {course?.price ? (

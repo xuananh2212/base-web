@@ -2,8 +2,10 @@
 import CoursesService from "@/services/courses/CoursesService";
 import { useQuery } from "@tanstack/react-query";
 import { Breadcrumb, Button, Card, Col, Collapse, Row, Skeleton, Tag, Typography } from "antd";
+import Cookies from "js-cookie";
 import Link from "next/link";
-import { useParams } from "next/navigation";
+import { useParams, usePathname, useRouter } from "next/navigation";
+import { toast } from "sonner";
 import { formatVND } from "../components/CourseList";
 
 const { Title, Text } = Typography;
@@ -11,7 +13,9 @@ const { Panel } = Collapse;
 
 export default function CourseDetailPage() {
   const params = useParams();
+  const router = useRouter();
   const slug = params?.slug;
+  const pathname = usePathname();
 
   const { data, isFetching } = useQuery({
     queryKey: ["COURSES", slug],
@@ -20,6 +24,15 @@ export default function CourseDetailPage() {
       return response?.data;
     },
   });
+  const handleRegister = () => {
+    const token = Cookies.get("access_token");
+    if (!token) {
+      router.push(`/login?redirect=${encodeURIComponent(pathname)}`);
+      toast.warning("Bạn cần đăng nhập để đăng ký khoá học!");
+      return;
+    }
+    // TODO: Gọi API đăng ký học nếu có
+  };
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-6">
@@ -46,10 +59,10 @@ export default function CourseDetailPage() {
 
             <div className="mt-8">
               <Title level={4}>📚 Nội dung khóa học</Title>
-              <Text type="secondary">
+              <div className="mt-6 font-normal">
                 {data?.Topics?.length || 0} chương • Tổng số bài học:{" "}
                 {data?.Topics?.reduce((acc: any, cur: any) => acc + cur.Lessons.length, 0)} bài
-              </Text>
+              </div>
 
               <Collapse accordion className="mt-4 bg-white shadow-md rounded-xl" expandIconPosition="end">
                 {data?.Topics?.map((section: any, idx: number) => (
@@ -57,7 +70,7 @@ export default function CourseDetailPage() {
                     <ul className="list-disc list-inside text-gray-700">
                       {section?.Lessons?.map((lesson: any, lidx: number) => (
                         <li key={lidx} className="py-1 hover:text-blue-500 transition-all">
-                          {lesson.title}
+                          Bài {idx + 1}.{lidx + 1} {lesson.title}
                         </li>
                       ))}
                     </ul>
@@ -98,7 +111,7 @@ export default function CourseDetailPage() {
                   </div>
                 </div>
 
-                <Button type="primary" size="large" block>
+                <Button type="primary" size="large" block onClick={handleRegister}>
                   Đăng ký học ngay
                 </Button>
 

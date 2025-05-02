@@ -15,7 +15,7 @@ const Layout = ({
 }: Readonly<{
   children: React.ReactNode;
 }>) => {
-  return <div className="bg-color-50 min-h-[calc(100vh-48px)]">Private</div>;
+  return <div className="bg-color-50 min-h-[calc(100vh-48px)]">{children}</div>;
 };
 
 export default Layout;
