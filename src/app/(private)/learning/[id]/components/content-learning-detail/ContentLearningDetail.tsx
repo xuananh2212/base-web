@@ -20,6 +20,7 @@ const ContentLearningDetail = ({
   document,
   quiz,
 }: ContentLearningDetailProps) => {
+  console.log("quiz", quiz);
   if (videoUrl) {
     return (
       <Content
@@ -50,7 +51,7 @@ const ContentLearningDetail = ({
     return <div className="mt-4 p-6" dangerouslySetInnerHTML={{ __html: document }} />;
   }
   if (quiz) {
-    return <QuizList />;
+    return <QuizList quizData={quiz.questions || []} />;
   }
 };
 

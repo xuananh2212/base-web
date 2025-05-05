@@ -1,9 +1,10 @@
 "use client";
 import Marquee from "@/app/(public)/(site)/components/marquee/Marquee";
-import { Button, Menu } from "antd";
+import { Menu } from "antd";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import ActionHeader from "../action-header/ActionHeader";
 
 const Header = () => {
   const pathname = usePathname();
@@ -40,14 +41,7 @@ const Header = () => {
           </Menu>
         </div>
         <div className="flex gap-2">
-          <Link href="/login">
-            <Button className="px-4 py-2 rounded border border-color-500 text-color-500 hover:bg-color-500 hover:text-white transition">
-              Đăng nhập
-            </Button>
-          </Link>
-          <Link href="/register">
-            <Button className="px-4 py-2 rounded bg-color-600 text-white hover:bg-color-600 transition">Đăng ký</Button>
-          </Link>
+          <ActionHeader />
         </div>
       </div>
 

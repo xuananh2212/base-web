@@ -56,9 +56,9 @@ export default function Home() {
         <h2 className="text-2xl font-bold text-center mb-10">Khoá học nổi bật</h2>
         <Row gutter={[16, 16]}>
           {[
-            { name: "Toán 12", desc: "Ôn tập kiến thức, luyện đề, bí kíp giải nhanh", img: "/math.png" },
-            { name: "Ngữ Văn 12", desc: "Phân tích tác phẩm, luyện viết nghị luận xã hội", img: "/literature.png" },
-            { name: "Tiếng Anh 12", desc: "Luyện nghe, đọc hiểu, củng cố ngữ pháp", img: "/english.png" },
+            { name: "Toán 12", desc: "Ôn tập kiến thức, luyện đề, bí kíp giải nhanh", img: "/images/image_1.jpg" },
+            { name: "Ngữ Văn 12", desc: "Phân tích tác phẩm, luyện viết nghị luận xã hội", img: "/images/image_3.jpg" },
+            { name: "Tiếng Anh 12", desc: "Luyện nghe, đọc hiểu, củng cố ngữ pháp", img: "/images/image_4.jpg" },
           ].map((course, idx) => (
             <Col xs={24} md={8} key={idx} data-aos="zoom-in-up">
               <Card hoverable cover={<Image src={course.img} alt={course.name} width={400} height={250} />}>
@@ -74,9 +74,9 @@ export default function Home() {
         <h2 className="text-2xl font-bold text-center mb-10">Bộ đề luyện tập</h2>
         <Row gutter={[16, 16]}>
           {[
-            { title: "Đề thi Toán", questions: 50, img: "/quiz-math.png" },
-            { title: "Đề thi Văn", questions: 40, img: "/quiz-literature.png" },
-            { title: "Đề thi Anh", questions: 45, img: "/quiz-english.png" },
+            { title: "Đề thi Toán", questions: 50, img: "/images/image_5.jpeg" },
+            { title: "Đề thi Văn", questions: 40, img: "/images/images.jpeg" },
+            { title: "Đề thi Anh", questions: 45, img: "/images/ta.jpg" },
           ].map((quiz, idx) => (
             <Col xs={24} md={8} key={idx} data-aos="zoom-in-down">
               <Card hoverable cover={<Image src={quiz.img} alt={quiz.title} width={400} height={250} />}>

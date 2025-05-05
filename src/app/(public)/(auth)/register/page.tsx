@@ -1,32 +1,39 @@
 "use client";
+import { useMutation } from "@tanstack/react-query";
 import { Button, Card, Form, Input } from "antd";
+import axios from "axios";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 export default function RegisterPage() {
-  const [loading, setLoading] = useState(false);
   const [form] = Form.useForm();
+  const router = useRouter();
 
-  const handleFinish = async (values: any) => {
-    setLoading(true);
-    try {
-      console.log("Dữ liệu đăng ký:", values);
-      setTimeout(() => {
-        setLoading(false);
-        alert("Đăng ký thành công!");
-      }, 1000);
-    } catch (error) {
-      console.error("Đăng ký thất bại", error);
-      setLoading(false);
-    }
+  const mutation = useMutation({
+    mutationFn: async (values: any) => {
+      const response = await axios.post("http://localhost:3000/api/auth/v1/resgiter", values);
+      return response.data;
+    },
+    onSuccess: () => {
+      toast.success("Đăng ký thành công!");
+      router.push("/login");
+    },
+    onError: (error: any) => {
+      toast.error("Đăng ký thất bại: " + error?.response?.data?.errors?.email || "");
+    },
+  });
+
+  const handleFinish = (values: any) => {
+    mutation.mutate(values);
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
       <Card className="w-full max-w-md shadow-lg">
         <div className="text-center">
-          <Image className="rounded-lg " src="/images/logo.png" width={40} height={40} alt="logo" />
+          <Image className="rounded-lg" src="/images/logo.png" width={40} height={40} alt="logo" />
         </div>
         <h2 className="text-2xl font-bold mb-6 text-center">Đăng ký</h2>
         <Form
@@ -92,7 +99,7 @@ export default function RegisterPage() {
           </Form.Item>
 
           <Form.Item className="mt-4">
-            <Button type="primary" htmlType="submit" block loading={loading} className="bg-blue-color">
+            <Button type="primary" htmlType="submit" block loading={mutation.isPending} className="bg-blue-color">
               Đăng ký
             </Button>
           </Form.Item>

@@ -24,7 +24,7 @@ export default function LoginPage() {
       router.push(redirect);
     },
     onError: (error: any) => {
-      const errMsg = error.response?.data?.message || "Đăng nhập thất bại";
+      const errMsg = "Thông tin đăng nhập không chính xác!";
       toast.error(errMsg);
     },
   });
