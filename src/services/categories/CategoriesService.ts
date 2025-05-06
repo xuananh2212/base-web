@@ -5,6 +5,9 @@ export class CategoriesService {
   static getCategoriesWithCourses() {
     return axiosInstance.get(`/${CATEGORIES}/categories-with-courses`);
   }
+  static getCategoriesWithQuestionSet() {
+    return axiosInstance.get(`/${CATEGORIES}/categories-without-question-sets`);
+  }
 }
 
 export default CategoriesService;

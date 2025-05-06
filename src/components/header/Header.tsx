@@ -29,7 +29,7 @@ const Header = () => {
               </Link>
             </Menu.Item>
             <Menu.Item key="quizzes">
-              <Link href="#quizzes" className="font-semibold">
+              <Link href="/question-set" className="font-semibold">
                 Bộ đề
               </Link>
             </Menu.Item>
