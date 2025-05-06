@@ -128,41 +128,44 @@ const ExamPage = () => {
             />
           </Card>
 
-          {questionsWithMockAnswers.map((q, index) => (
-            <Card
-              key={q.id}
-              ref={(el) => (questionRefs.current[index] = el)}
-              className="mb-4"
-              title={<b>{`${index + 1}. ${q.question}`}</b>}
-            >
-              <Radio.Group
-                onChange={(e) =>
-                  setSelectedAnswers((prev) => ({
-                    ...prev,
-                    [q.id]: e.target.value,
-                  }))
-                }
-                value={selectedAnswers[q.id]}
-                style={{ width: "100%" }}
+          {questionsWithMockAnswers.map((q, index) => {
+            console.log("q", q);
+            return (
+              <Card
+                key={q.id}
+                ref={(el) => (questionRefs.current[index] = el)}
+                className="mb-4"
+                title={<b>{`${index + 1}. ${q.question}`}</b>}
               >
-                {q.answers.map((ans, i) => (
-                  <Card
-                    key={i}
-                    style={{ marginBottom: 8, cursor: "pointer" }}
-                    bodyStyle={{ padding: "8px 12px" }}
-                    onClick={() =>
-                      setSelectedAnswers((prev) => ({
-                        ...prev,
-                        [q.id]: ans,
-                      }))
-                    }
-                  >
-                    <Radio value={ans}>{ans}</Radio>
-                  </Card>
-                ))}
-              </Radio.Group>
-            </Card>
-          ))}
+                <Radio.Group
+                  onChange={(e) =>
+                    setSelectedAnswers((prev) => ({
+                      ...prev,
+                      [q.id]: e.target.value,
+                    }))
+                  }
+                  value={selectedAnswers[q.id]}
+                  style={{ width: "100%" }}
+                >
+                  {q.answers.map((ans, i) => (
+                    <Card
+                      key={i}
+                      style={{ marginBottom: 8, cursor: "pointer" }}
+                      bodyStyle={{ padding: "8px 12px" }}
+                      onClick={() =>
+                        setSelectedAnswers((prev) => ({
+                          ...prev,
+                          [q.id]: ans,
+                        }))
+                      }
+                    >
+                      <Radio value={ans}>{ans}</Radio>
+                    </Card>
+                  ))}
+                </Radio.Group>
+              </Card>
+            );
+          })}
         </Col>
 
         <Col span={6}>

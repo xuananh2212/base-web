@@ -25,9 +25,10 @@ export default function QuizList({ quizData }: { quizData: any[] }) {
     setAnswers({});
     toast.info("Bạn có thể làm lại bài.");
   };
+  console.log("showAnswer", showAnswer);
 
   return (
-    <div className="max-w-2xl mx-auto p-4">
+    <div className="max-w-2xl mx-auto p-4 pb-24">
       {quizData.map((q, idx) => {
         const correctAnswer = q.answers.find((a: any) => a.result)?.id;
 
