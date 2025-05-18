@@ -33,11 +33,11 @@ const Header = () => {
                 Bộ đề
               </Link>
             </Menu.Item>
-            <Menu.Item key="blogs">
+            {/* <Menu.Item key="blogs">
               <Link href="#blogs" className="font-semibold">
                 Bài viết
               </Link>
-            </Menu.Item>
+            </Menu.Item> */}
           </Menu>
         </div>
         <div className="flex gap-2">
