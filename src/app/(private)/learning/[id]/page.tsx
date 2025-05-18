@@ -57,7 +57,6 @@ export default function CourseWatchPage() {
   }
 
   const currentLessonData = data.chapters[currentChapter].lessons[currentLesson];
-  console.log("data.chapters", data.chapters);
   return (
     <Layout>
       {/* Fixed Header */}

@@ -11,11 +11,9 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
-    <>
-      <div>
-        <Header />
-        <div>{children}</div>
-      </div>
-    </>
+    <div>
+      <Header />
+      <div>{children}</div>
+    </div>
   );
 }
