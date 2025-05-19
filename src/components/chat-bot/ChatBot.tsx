@@ -6,7 +6,7 @@ import { GrLinkPrevious } from "react-icons/gr";
 import { IoSend } from "react-icons/io5";
 import styles from "./chatbot.module.scss";
 
-const apiKey1 = `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`;
+const apiKey1 = `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`;
 
 export default function ChatBot() {
   const [isSubmit, setIsSubmit] = useState(true);
