@@ -2,15 +2,16 @@
 import { axiosInstance } from "@/configs/axios.config";
 import { useQuery } from "@tanstack/react-query";
 import { Button, Card, Col, Modal, Progress, Radio, Row, Typography } from "antd";
+import Cookies from "js-cookie";
+import jwt from "jsonwebtoken";
 import { useParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-
+const ACCESS_TOKEN = "aa29f44dfaf7bcca15d1dceddec343c66bc38924efe1cab7ebc9be6752f60192";
 const { Title } = Typography;
 
 interface Answer {
   id: string;
   name: string;
-  result: boolean;
 }
 
 interface Question {
@@ -33,15 +34,17 @@ interface QuestionSetResponse {
 const ExamPage = () => {
   const params = useParams();
   const questionSetId = params?.id as string;
+  const [user, setUser] = useState<any>(null);
 
   const [timeLeft, setTimeLeft] = useState<number>(1800);
   const [selectedAnswers, setSelectedAnswers] = useState<Record<string, string>>({});
   const [isResultVisible, setIsResultVisible] = useState(false);
   const [resultSummary, setResultSummary] = useState({ correct: 0, wrong: 0, score: 0 });
   const [showExplanation, setShowExplanation] = useState(false);
+  const [correctAnswerMap, setCorrectAnswerMap] = useState<Record<string, string>>({});
   const questionRefs = useRef<(HTMLDivElement | null)[]>([]);
 
-  const { data, isLoading, error, refetch } = useQuery<QuestionSetResponse>({
+  const { data, isLoading, error } = useQuery<QuestionSetResponse>({
     queryKey: ["questionSet", questionSetId],
     queryFn: async () => {
       const res = await axiosInstance.get(`/question-set/v1/${questionSetId}`);
@@ -54,6 +57,17 @@ const ExamPage = () => {
     const timer = setInterval(() => {
       setTimeLeft((prev) => (prev > 0 ? prev - 1 : 0));
     }, 1000);
+    const token = Cookies.get("access_token");
+    if (token) {
+      const payload: any = jwt.decode(token, ACCESS_TOKEN as any);
+      console.log("payload", payload);
+      setUser({
+        id: payload?.id,
+        avatar: payload?.avatar,
+        email: payload?.email,
+        fullname: payload?.fullname,
+      });
+    }
     return () => clearInterval(timer);
   }, []);
 
@@ -72,7 +86,7 @@ const ExamPage = () => {
     });
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     Modal.confirm({
       title: "Xác nhận nộp bài",
       content: "Bạn có chắc chắn muốn nộp bài không?",
@@ -80,31 +94,37 @@ const ExamPage = () => {
     });
   };
 
-  const calculateResult = () => {
+  const calculateResult = async () => {
     if (!data) return;
 
-    let correctCount = 0;
-    data.Questions.forEach((q) => {
-      const correctAnswer = q.Answers.find((a) => a.result);
-      if (selectedAnswers[q.id] === correctAnswer?.id) {
-        correctCount++;
-      }
-    });
+    const answers = Object.entries(selectedAnswers).map(([questionId, answerId]) => ({
+      questionId,
+      answerId,
+    }));
 
-    const wrongCount = data.Questions.length - correctCount;
-    const score = Math.round((correctCount / data.Questions.length) * 10);
+    try {
+      const res = await axiosInstance.post("/quiz-result/v1/evaluate", {
+        userId: user?.id,
+        questionSetId: data.id,
+        answers,
+      });
 
-    setResultSummary({ correct: correctCount, wrong: wrongCount, score });
-    setShowExplanation(true);
-    setIsResultVisible(true);
+      const result = res.data;
+      setResultSummary({ correct: result.correct, wrong: result.wrong, score: result.score });
+      setCorrectAnswerMap(result.correctAnswerMap);
+      setShowExplanation(true);
+      setIsResultVisible(true);
+    } catch (err) {
+      console.error("Lỗi khi gửi kết quả:", err);
+    }
   };
 
   const handleRetry = () => {
     setSelectedAnswers({});
     setShowExplanation(false);
     setIsResultVisible(false);
+    setCorrectAnswerMap({});
     setTimeLeft(data ? data.duration * 60 : 1800);
-    refetch();
   };
 
   if (!questionSetId) return <div>Không tìm thấy ID bộ đề.</div>;
@@ -134,14 +154,15 @@ const ExamPage = () => {
           </Card>
 
           {data.Questions.map((q, index) => {
-            const correctAnswer = q.Answers.find((a) => a.result);
+            const correctAnswerId = correctAnswerMap[q.id];
             const userAnswer = selectedAnswers[q.id];
-            const isCorrect = userAnswer === correctAnswer?.id;
 
             return (
               <Card
                 key={q.id}
-                ref={(el) => (questionRefs.current[index] = el)}
+                ref={(el) => {
+                  questionRefs.current[index] = el;
+                }}
                 className="mb-4"
                 title={<b>{`${index + 1}. ${q.question}`}</b>}
               >
@@ -159,9 +180,9 @@ const ExamPage = () => {
                   {q.Answers.map((ans) => {
                     let borderColor;
                     if (showExplanation) {
-                      if (ans.id === correctAnswer?.id) {
+                      if (ans.id === correctAnswerId) {
                         borderColor = "2px solid green";
-                      } else if (ans.id === userAnswer && ans.id !== correctAnswer?.id) {
+                      } else if (ans.id === userAnswer && ans.id !== correctAnswerId) {
                         borderColor = "2px solid red";
                       }
                     }
@@ -188,11 +209,6 @@ const ExamPage = () => {
                     );
                   })}
                 </Radio.Group>
-                {showExplanation && (
-                  <div className="mt-2">
-                    <b>Giải thích:</b> {q.explain || "Không có giải thích"}
-                  </div>
-                )}
               </Card>
             );
           })}
