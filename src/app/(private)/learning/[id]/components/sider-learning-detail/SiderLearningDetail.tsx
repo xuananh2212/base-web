@@ -1,5 +1,5 @@
 import { CheckCircleOutlined, PlayCircleOutlined } from "@ant-design/icons";
-import { Collapse, Layout, List, Progress, Typography } from "antd";
+import { Collapse, Layout, List, Typography } from "antd";
 
 const { Sider } = Layout;
 const { Title } = Typography;
@@ -47,7 +47,7 @@ const SiderLearningDetail = ({
     >
       <div className="p-4">
         <Title level={5}>Nội dung khóa học</Title>
-        <Progress percent={progress} className="mb-4 text-color-500" />
+        {/* <Progress percent={progress} className="mb-4 text-color-500" /> */}
         <Collapse>
           {chapters.map((chapter, cIdx) => (
             <Panel header={chapter.title} key={cIdx}>

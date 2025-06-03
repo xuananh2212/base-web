@@ -56,7 +56,7 @@ export default function CourseWatchPage() {
     return <div className="p-6 text-red-500">Không tìm thấy dữ liệu khoá học.</div>;
   }
 
-  const currentLessonData = data.chapters[currentChapter].lessons[currentLesson];
+  const currentLessonData = data?.chapters[currentChapter]?.lessons[currentLesson];
   return (
     <Layout>
       {/* Fixed Header */}
