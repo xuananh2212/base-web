@@ -5,18 +5,19 @@ import jwt from "jsonwebtoken";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import QuizResultModal from "./QuizResultModal";
 const ACCESS_TOKEN = "aa29f44dfaf7bcca15d1dceddec343c66bc38924efe1cab7ebc9be6752f60192";
 const REFRESH_TOKEN = "4330c60cef9f82ca0dcbf0485eb0e0cef7bcf79af8d965203c3464ef0479a93a";
 const ActionHeader = () => {
   const [user, setUser] = useState<any>(null);
   const router = useRouter();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [showResultModal, setShowResultModal] = useState(false);
 
   useEffect(() => {
     const token = Cookies.get("access_token");
     if (token) {
       const payload: any = jwt.decode(token, ACCESS_TOKEN as any);
-      console.log("payload", payload);
       setUser({
         id: payload?.id,
         avatar: payload?.avatar,
@@ -76,10 +77,11 @@ const ActionHeader = () => {
     {
       key: "4",
       label: (
-        <div>
-          <Link className="block text-[14px] py-[10px] text-[#666] cursor-pointer hover:text-[#000] " href={"#"}>
-            Xem kết quả học tập
-          </Link>
+        <div
+          onClick={() => setShowResultModal(true)}
+          className="block text-[14px] py-[10px] text-[#666] cursor-pointer hover:text-[#000]"
+        >
+          Xem kết quả học tập
         </div>
       ),
     },
@@ -119,13 +121,18 @@ const ActionHeader = () => {
       </Link>
     </div>
   ) : (
-    <Dropdown menu={{ items }} trigger={["click"]}>
-      <div className="relative flex p-[3px] items-center justify-center cursor-pointer rounded-full bg-gradient-to-r from-[#ffd900] to-[#b45264] w-[36px] h-[36px]">
-        <button className="w-[30px] h-[30px] relative flex items-center justify-center rounded-full overflow-hidden bg-white">
-          <span className="text-[14px] font-bold text-[#b45264] uppercase">{user?.fullname?.charAt(0) || ""}</span>
-        </button>
-      </div>
-    </Dropdown>
+    <>
+      <Dropdown menu={{ items }} trigger={["click"]}>
+        <div className="relative flex p-[3px] items-center justify-center cursor-pointer rounded-full bg-gradient-to-r from-[#ffd900] to-[#b45264] w-[36px] h-[36px]">
+          <button className="w-[30px] h-[30px] relative flex items-center justify-center rounded-full overflow-hidden bg-white">
+            <span className="text-[14px] font-bold text-[#b45264] uppercase">{user?.fullname?.charAt(0) || ""}</span>
+          </button>
+        </div>
+      </Dropdown>
+      {showResultModal && (
+        <QuizResultModal open={showResultModal} onClose={() => setShowResultModal(false)} userId={user?.id} />
+      )}
+    </>
   );
 };
 
