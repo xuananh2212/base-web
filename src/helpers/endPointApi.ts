@@ -12,4 +12,5 @@ export const endPointApi = {
   TOPICS: "topic/v1",
   LESSONS: "lesson/v1",
   USERS_COURSE: "user-course/v1",
+  PAYOS: "payos/v1",
 };

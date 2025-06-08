@@ -1,8 +1,9 @@
 "use client";
 import CoursesService from "@/services/courses/CoursesService";
+import PayOsService from "@/services/payos/PayOs";
 import UsersCoursesService from "@/services/user-course/UserCoursesService";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { Breadcrumb, Button, Card, Col, Collapse, Row, Skeleton, Tag, Typography } from "antd";
+import { Breadcrumb, Button, Card, Col, Collapse, Popconfirm, Row, Skeleton, Tag, Typography } from "antd";
 import Cookies from "js-cookie";
 import jwt from "jsonwebtoken";
 import Link from "next/link";
@@ -66,7 +67,21 @@ export default function CourseDetailPage() {
       }
     } else {
       // Khóa học mất phí, chuyển đến trang chi tiết hoặc thanh toán
-      router.push(`/learning/${data.id}`);
+      // router.push(`/learning/${data.id}`);
+      const response = await PayOsService.createPaymentLink({
+        amount: data.discounted_price,
+        userId: user.id,
+        courseId: data?.id,
+        description: `Khóa học: ${data?.title || ""}`.slice(0, 25),
+        returnUrl: `http://localhost:3200//learning/${data.id}`,
+        cancelUrl: `http://localhost:3200//payment-failed`,
+      });
+
+      if (response?.data?.checkoutUrl) {
+        window.location.href = response.data.checkoutUrl;
+      } else {
+        toast.error("Tạo đơn thanh toán thất bại");
+      }
     }
   };
 
@@ -147,9 +162,22 @@ export default function CourseDetailPage() {
                   </div>
                 </div>
 
-                <Button type="primary" size="large" block onClick={handleRegister}>
-                  Đăng ký học ngay
-                </Button>
+                {data?.price ? (
+                  <Popconfirm
+                    title="Bạn có chắc muốn mua khoá học này?"
+                    onConfirm={handleRegister}
+                    okText="Đồng ý"
+                    cancelText="Hủy"
+                  >
+                    <Button type="primary" size="large" block>
+                      Mua khoá học
+                    </Button>
+                  </Popconfirm>
+                ) : (
+                  <Button type="primary" size="large" block onClick={handleRegister}>
+                    Đăng ký học
+                  </Button>
+                )}
 
                 <div className="text-sm text-gray-600 mt-2 space-y-1">
                   <p>
