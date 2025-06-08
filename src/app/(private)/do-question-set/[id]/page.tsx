@@ -60,7 +60,6 @@ const ExamPage = () => {
     const token = Cookies.get("access_token");
     if (token) {
       const payload: any = jwt.decode(token, ACCESS_TOKEN as any);
-      console.log("payload", payload);
       setUser({
         id: payload?.id,
         avatar: payload?.avatar,

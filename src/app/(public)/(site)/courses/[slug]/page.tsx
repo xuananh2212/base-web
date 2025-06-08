@@ -1,22 +1,39 @@
 "use client";
 import CoursesService from "@/services/courses/CoursesService";
-import { useQuery } from "@tanstack/react-query";
+import UsersCoursesService from "@/services/user-course/UserCoursesService";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Breadcrumb, Button, Card, Col, Collapse, Row, Skeleton, Tag, Typography } from "antd";
 import Cookies from "js-cookie";
+import jwt from "jsonwebtoken";
 import Link from "next/link";
 import { useParams, usePathname, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { formatVND } from "../components/CourseList";
-
+const ACCESS_TOKEN = "aa29f44dfaf7bcca15d1dceddec343c66bc38924efe1cab7ebc9be6752f60192";
 const { Title, Text } = Typography;
 const { Panel } = Collapse;
 
 export default function CourseDetailPage() {
+  const queryClient = useQueryClient();
   const params = useParams();
   const router = useRouter();
   const slug = params?.slug;
   const pathname = usePathname();
-
+  const [user, setUser] = useState<any>(null);
+  useEffect(() => {
+    const token = Cookies.get("access_token");
+    if (token) {
+      const payload: any = jwt.decode(token, ACCESS_TOKEN as any);
+      console.log("payload", payload);
+      setUser({
+        id: payload?.id,
+        avatar: payload?.avatar,
+        email: payload?.email,
+        fullname: payload?.fullname,
+      });
+    }
+  }, []);
   const { data, isFetching } = useQuery({
     queryKey: ["COURSES", slug],
     queryFn: async () => {
@@ -24,15 +41,33 @@ export default function CourseDetailPage() {
       return response?.data;
     },
   });
-  const handleRegister = () => {
+  const handleRegister = async () => {
     const token = Cookies.get("access_token");
     if (!token) {
       router.push(`/login?redirect=${encodeURIComponent(pathname)}`);
       toast.warning("Bạn cần đăng nhập để đăng ký khoá học!");
       return;
     }
-    // TODO: Gọi API đăng ký học nếu có
-    router.push(`/learning/${data?.id || ""}`);
+    if (data?.price === 0 || !data?.price) {
+      // Khóa học miễn phí, gọi API đăng ký luôn
+      try {
+        await UsersCoursesService.createUserCourse({
+          userId: user?.id,
+          courseId: data.id,
+        }); // Giả sử API đăng ký có method này, bạn tự tạo trong service
+        toast.success("Đăng ký khóa học miễn phí thành công!");
+        queryClient.invalidateQueries({
+          queryKey: ["categoriesWithCourses"],
+        });
+        router.push(`/learning/${data.id}`); // Chuyển thẳng vào học
+      } catch (error) {
+        console.error("Đăng ký khóa học miễn phí lỗi:", error);
+        toast.error("Đăng ký khóa học thất bại, vui lòng thử lại!");
+      }
+    } else {
+      // Khóa học mất phí, chuyển đến trang chi tiết hoặc thanh toán
+      router.push(`/learning/${data.id}`);
+    }
   };
 
   return (

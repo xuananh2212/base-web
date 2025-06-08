@@ -12,7 +12,6 @@ export default function QuestionSetPage() {
       return response?.data;
     },
   });
-  console.log("data", data);
   return isFetching ? (
     <LoadingOverLay />
   ) : (
