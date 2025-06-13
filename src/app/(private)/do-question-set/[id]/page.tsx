@@ -69,6 +69,11 @@ const ExamPage = () => {
     }
     return () => clearInterval(timer);
   }, []);
+  useEffect(() => {
+    if (data?.duration) {
+      setTimeLeft((data.duration || 60) * 60);
+    }
+  }, [data?.duration]);
 
   const formatTime = (seconds: number) => {
     const m = Math.floor(seconds / 60)

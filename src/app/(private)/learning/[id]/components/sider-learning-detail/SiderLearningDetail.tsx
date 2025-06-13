@@ -71,11 +71,7 @@ const SiderLearningDetail = ({
                       }
                       title={lesson.title}
                       description={
-                        lesson.videoUrl
-                          ? `Thời lượng: ${lesson.duration}`
-                          : lesson.document
-                            ? "Dạng tài liệu"
-                            : "Dạng Trắc nghiệm"
+                        lesson.videoUrl ? `Dạng video` : lesson.document ? "Dạng tài liệu" : "Dạng Trắc nghiệm"
                       }
                     />
                   </List.Item>
